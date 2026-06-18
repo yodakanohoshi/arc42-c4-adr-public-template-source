@@ -1,4 +1,4 @@
-# 9. Architecture Decisions
+# 9. アーキテクチャ決定
 
 arc42本文にはADRの索引と現在の状態を記載し、判断の詳細は個別ADRへ分離する。
 

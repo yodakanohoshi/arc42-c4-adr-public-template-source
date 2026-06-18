@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import html
+import os
 import re
 import shutil
 import subprocess
@@ -28,6 +29,23 @@ MKDOCS = PROJECT / "mkdocs.yml"
 CONFIG = PROJECT / "pdf" / "config.yml"
 BASE_CSS = PROJECT / "pdf" / "print.css"
 HTML_TEMPLATE = PROJECT / "pdf" / "template.html"
+MERMAID_DIR = PROJECT / "build" / "mermaid"
+PUPPETEER_CONFIG = PROJECT / "pdf" / "puppeteer.json"
+
+
+class _Loader(yaml.SafeLoader):
+    """SafeLoader that ignores MkDocs plugin tags such as !!python/name:."""
+
+
+def _ignore_python_tag(loader: yaml.Loader, tag_suffix: str, node: yaml.Node) -> None:
+    return None
+
+
+# MkDocs configs can carry "!!python/name:..." tags (e.g. the mermaid2 superfences
+# fence). They are irrelevant to the PDF build, so drop them instead of executing
+# or rejecting them, keeping the loader safe.
+_Loader.add_multi_constructor("tag:yaml.org,2002:python/name:", _ignore_python_tag)
+_Loader.add_multi_constructor("tag:yaml.org,2002:python/module:", _ignore_python_tag)
 
 
 def fail(message: str) -> NoReturn:
@@ -37,7 +55,7 @@ def fail(message: str) -> NoReturn:
 
 def read_yaml(path: Path) -> dict[str, Any]:
     try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        data = yaml.load(path.read_text(encoding="utf-8"), Loader=_Loader)
     except (OSError, yaml.YAMLError) as exc:
         fail(f"cannot read {path}: {exc}")
     if not isinstance(data, dict):
@@ -286,6 +304,55 @@ body {{
     return output
 
 
+def render_mermaid_blocks(combined: Path) -> int:
+    """Render fenced ```mermaid blocks to PNG and replace them with images.
+
+    WeasyPrint cannot run JavaScript, so Mermaid (including C4 diagrams) is
+    rendered to images at build time with mermaid-cli (mmdc). The source ```mermaid
+    blocks stay editable in docs/*.md; only the combined Markdown is rewritten.
+    """
+    text = combined.read_text(encoding="utf-8")
+    if "```mermaid" not in text and "~~~mermaid" not in text:
+        return 0
+
+    mmdc = os.environ.get("MERMAID_CLI") or shutil.which("mmdc")
+    if not mmdc:
+        fail("mermaid code blocks found but mmdc (mermaid-cli) was not found in PATH")
+
+    MERMAID_DIR.mkdir(parents=True, exist_ok=True)
+    lines = text.splitlines()
+    out: list[str] = []
+    count = 0
+    i = 0
+    while i < len(lines):
+        stripped = lines[i].strip()
+        if stripped in ("```mermaid", "~~~mermaid"):
+            fence = stripped[:3]
+            i += 1
+            code: list[str] = []
+            while i < len(lines) and lines[i].strip() != fence:
+                code.append(lines[i])
+                i += 1
+            if i < len(lines):
+                i += 1  # skip the closing fence
+            count += 1
+            source = MERMAID_DIR / f"diagram-{count:03d}.mmd"
+            source.write_text("\n".join(code) + "\n", encoding="utf-8")
+            image = MERMAID_DIR / f"diagram-{count:03d}.png"
+            command = [mmdc, "-i", str(source), "-o", str(image), "-b", "white", "-s", "2"]
+            if PUPPETEER_CONFIG.is_file():
+                command += ["-p", str(PUPPETEER_CONFIG)]
+            run(command)
+            out.append(f"![]({image.relative_to(PROJECT).as_posix()})")
+            out.append("")
+        else:
+            out.append(lines[i])
+            i += 1
+
+    combined.write_text("\n".join(out) + "\n", encoding="utf-8")
+    return count
+
+
 def run(command: list[str]) -> None:
     print("+", " ".join(command))
     subprocess.run(command, cwd=PROJECT, check=True)
@@ -305,6 +372,9 @@ def main() -> None:
     config = read_yaml(CONFIG)
     entries = list(flatten_nav(mkdocs.get("nav")))
     combined = make_combined(entries, config)
+    diagrams = render_mermaid_blocks(combined)
+    if diagrams:
+        print(f"Rendered {diagrams} Mermaid diagram(s)")
     override_css = make_override_css(config)
 
     output_pdf = args.output or PROJECT / str(config.get("output", "build/architecture.pdf"))

@@ -1,4 +1,4 @@
-# 8. Crosscutting Concepts
+# 8. 横断的コンセプト
 
 複数のBuilding Blockへ適用する共通設計方針を記載する。
 

@@ -24,11 +24,11 @@ nav:
       - 2. 制約: 02-constraints.md
       - 3. コンテキストとスコープ: 03-context-and-scope.md
       - 4. ソリューション戦略: 04-solution-strategy.md
-      - 5. Building Block View: 05-building-block-view.md
-      - 6. Runtime View: 06-runtime-view.md
-      - 7. Deployment View: 07-deployment-view.md
-      - 8. Crosscutting Concepts: 08-crosscutting-concepts.md
-      - 9. Architecture Decisions: 09-architecture-decisions.md
+      - 5. ブロックビュー: 05-building-block-view.md
+      - 6. ランタイムビュー: 06-runtime-view.md
+      - 7. デプロイメントビュー: 07-deployment-view.md
+      - 8. 横断的コンセプト: 08-crosscutting-concepts.md
+      - 9. アーキテクチャ決定: 09-architecture-decisions.md
       - 10. 品質要件: 10-quality-requirements.md
       - 11. リスクと技術的負債: 11-risks-and-technical-debt.md
       - 12. 用語集: 12-glossary.md
@@ -65,6 +65,17 @@ markdown_extensions:
   - toc:
       permalink: true
       toc_depth: 3
+  # ```mermaid ブロック（C4を含む）を <pre class="mermaid"> として出力する。
+  # サイトはブラウザでMermaidを描画し、PDFはビルド時に画像化する。
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 extra_css:
   - assets/stylesheets/extra.css
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
+  - assets/javascripts/mermaid-init.js

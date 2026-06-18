@@ -23,4 +23,11 @@ done
 
 pandoc --version | sed -n '1,2p'
 dot -V 2>&1
+
+if command -v mmdc >/dev/null 2>&1; then
+  echo "mermaid-cli: $(mmdc --version 2>/dev/null | head -n 1)"
+else
+  echo "mermaid-cli (mmdc) not found: Mermaid diagrams will not render in the PDF" >&2
+fi
+
 echo "PDF toolchain check passed (Pandoc + HTML/CSS + WeasyPrint; no LaTeX)."
