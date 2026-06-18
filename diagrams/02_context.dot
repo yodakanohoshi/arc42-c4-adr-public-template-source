@@ -1,0 +1,16 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="transparent", pad="0.25", nodesep="0.55", ranksep="0.8", fontname="Noto Sans CJK JP", label="System Context", labelloc=t, fontsize=18];
+  node [shape=box, style="rounded,filled", fontname="Noto Sans CJK JP", fontsize=13, color="#35627d", fillcolor="#eef5fa", margin="0.18,0.12"];
+  edge [fontname="Noto Sans CJK JP", fontsize=10, color="#52606d", arrowsize=0.8];
+  user [shape=oval, label="利用者", fillcolor="#fff4d6"];
+  operator [shape=oval, label="運用者", fillcolor="#fff4d6"];
+  target [label="対象システム\n業務処理・データ管理", fillcolor="#d9edf7", penwidth=2];
+  ext [label="外部システム\n参照・更新"];
+  notify [label="通知サービス"];
+  obs [label="可観測性基盤"];
+  user -> target [label="業務操作"];
+  operator -> target [label="管理・確認"];
+  target -> ext [label="業務データ", dir=both];
+  target -> notify [label="通知要求"];
+  target -> obs [label="テレメトリ"];
+}

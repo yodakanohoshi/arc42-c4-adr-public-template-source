@@ -1,0 +1,70 @@
+site_name: arc42 / C4 / ADR Documentation Template
+site_description: 汎用的なソフトウェアアーキテクチャ文書テンプレート
+site_author: Template Maintainers
+site_dir: site
+use_directory_urls: false
+strict: true
+
+# 公開先のURLが決まった場合に設定してください。
+# site_url: https://example.invalid/architecture-template/
+# repo_url: https://example.invalid/your/repository
+
+copyright: >-
+  Documentation: CC BY-SA 4.0 / Build tooling: MIT
+
+theme:
+  name: readthedocs
+  language: ja
+  highlightjs: true
+
+nav:
+  - ホーム: index.md
+  - arc42:
+      - 1. はじめにと目標: 01-introduction-and-goals.md
+      - 2. 制約: 02-constraints.md
+      - 3. コンテキストとスコープ: 03-context-and-scope.md
+      - 4. ソリューション戦略: 04-solution-strategy.md
+      - 5. Building Block View: 05-building-block-view.md
+      - 6. Runtime View: 06-runtime-view.md
+      - 7. Deployment View: 07-deployment-view.md
+      - 8. Crosscutting Concepts: 08-crosscutting-concepts.md
+      - 9. Architecture Decisions: 09-architecture-decisions.md
+      - 10. 品質要件: 10-quality-requirements.md
+      - 11. リスクと技術的負債: 11-risks-and-technical-debt.md
+      - 12. 用語集: 12-glossary.md
+  - 要件・受入:
+      - 要件台帳テンプレート: requirements/requirements-register.md
+      - 受入条件テンプレート: requirements/acceptance-criteria.md
+      - 未決事項台帳: requirements/open-questions.md
+  - インターフェース:
+      - 外部IF台帳: interfaces/external-interface-register.md
+      - 連携プロファイル: interfaces/integration-profile.md
+  - ADR:
+      - ADR一覧: adr/index.md
+      - ADRテンプレート: adr/0000-template.md
+      - ADRサンプル: adr/0001-machine-readable-interface-contract.md
+  - セキュリティ:
+      - 脅威モデル: security/threat-model.md
+      - アクセス制御マトリクス: security/authorization-matrix.md
+  - 運用:
+      - SLOテンプレート: operations/slo.md
+      - Runbookテンプレート: operations/runbook.md
+  - 補助テンプレート:
+      - Design Doc / RFC: supporting-templates/design-doc.md
+      - 文書メタデータ: supporting-templates/document-metadata.md
+      - 正の情報源一覧: supporting-templates/source-of-truth.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - sane_lists
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+extra_css:
+  - assets/stylesheets/extra.css

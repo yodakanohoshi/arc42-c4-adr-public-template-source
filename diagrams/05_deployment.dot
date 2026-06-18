@@ -1,0 +1,23 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="transparent", pad="0.25", nodesep="0.4", ranksep="0.7", fontname="Noto Sans CJK JP", label="Deployment View", labelloc=t, fontsize=18, compound=true];
+  node [shape=box, style="rounded,filled", fontname="Noto Sans CJK JP", fontsize=11, color="#35627d", fillcolor="#eef5fa", margin="0.16,0.09"];
+  edge [fontname="Noto Sans CJK JP", fontsize=9, color="#52606d", arrowsize=0.7];
+  user [shape=oval, label="利用者", fillcolor="#fff4d6"];
+  ext [label="外部システム"];
+  obs [label="可観測性基盤"];
+  subgraph cluster_prod {
+    label="Production Environment"; fontname="Noto Sans CJK JP"; fontsize=14; color="#7b9bb1"; style="rounded,dashed";
+    ingress [label="公開入口\nGateway / Load Balancer"];
+    subgraph cluster_a { label="Failure Domain A"; fontname="Noto Sans CJK JP"; style="rounded"; color="#aab7c4"; appa [label="Application Runtime"]; worka [label="Worker Runtime"]; }
+    subgraph cluster_b { label="Failure Domain B"; fontname="Noto Sans CJK JP"; style="rounded"; color="#aab7c4"; appb [label="Application Runtime"]; workb [label="Worker Runtime"]; }
+    data [shape=cylinder, label="Replicated Data Store", fillcolor="#e8f5e9"];
+    queue [shape=cylinder, label="Message Store", fillcolor="#e8f5e9"];
+    ingress -> appa; ingress -> appb;
+    appa -> data [dir=both]; appb -> data [dir=both];
+    appa -> queue; appb -> queue; queue -> worka; queue -> workb;
+  }
+  user -> ingress [label="Request"];
+  appa -> ext [label="Integration", dir=both];
+  appb -> ext [label="Integration", dir=both];
+  appa -> obs [style=dashed]; appb -> obs [style=dashed]; worka -> obs [style=dashed]; workb -> obs [style=dashed];
+}

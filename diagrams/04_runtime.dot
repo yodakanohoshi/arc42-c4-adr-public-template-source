@@ -1,0 +1,13 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="transparent", pad="0.25", nodesep="0.35", ranksep="0.45", fontname="Noto Sans CJK JP", label="Runtime: 主要業務処理", labelloc=t, fontsize=18];
+  node [shape=box, style="rounded,filled", fontname="Noto Sans CJK JP", fontsize=11, color="#35627d", fillcolor="#eef5fa", margin="0.16,0.09"];
+  edge [fontname="Noto Sans CJK JP", fontsize=9, color="#52606d", arrowsize=0.7];
+  start [shape=oval, label="1. 利用者が操作", fillcolor="#fff4d6"];
+  api [label="2. APIが入力・権限・重複を検証"];
+  core [label="3. コアが業務ルールを評価", fillcolor="#d9edf7"];
+  ext [label="4. 必要に応じ外部情報を参照"];
+  save [label="5. データを保存", fillcolor="#e8f5e9"];
+  async [label="6. 後続処理を非同期発行"];
+  result [shape=oval, label="7. 結果返却・テレメトリ記録", fillcolor="#fff4d6"];
+  start -> api -> core -> ext -> save -> async -> result;
+}

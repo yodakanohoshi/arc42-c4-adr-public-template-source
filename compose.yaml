@@ -1,0 +1,53 @@
+name: arc42-c4-adr-docs-template
+
+x-toolchain: &toolchain
+  build:
+    context: .
+    dockerfile: Dockerfile
+  working_dir: /workspace
+  volumes:
+    - .:/workspace
+  environment:
+    HOME: /tmp/home
+    XDG_CACHE_HOME: /tmp/cache
+    TZ: ${TZ:-UTC}
+  init: true
+
+services:
+  docs:
+    <<: *toolchain
+    command: sh -lc './scripts/build-diagrams.sh && mkdocs serve --dev-addr=0.0.0.0:8000'
+    ports:
+      - "8000:8000"
+
+  diagrams:
+    <<: *toolchain
+    command: ./scripts/build-diagrams.sh
+    profiles: ["tools"]
+
+  site:
+    <<: *toolchain
+    command: ./scripts/build-site.sh
+    profiles: ["tools"]
+
+  pdf:
+    <<: *toolchain
+    command: ./scripts/build-pdf.sh
+    profiles: ["tools"]
+
+  all:
+    <<: *toolchain
+    command: ./scripts/build-all.sh
+    profiles: ["tools"]
+
+  verify:
+    <<: *toolchain
+    command: ./scripts/verify.sh
+    profiles: ["tools"]
+
+  shell:
+    <<: *toolchain
+    command: bash
+    stdin_open: true
+    tty: true
+    profiles: ["tools"]

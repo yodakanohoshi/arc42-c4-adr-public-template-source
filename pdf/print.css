@@ -1,0 +1,223 @@
+/* Base print stylesheet for Pandoc HTML rendered by WeasyPrint. */
+
+:root {
+  --text: #1f2933;
+  --muted: #52606d;
+  --line: #cbd2d9;
+  --soft: #f5f7fa;
+  --accent: #234e70;
+  --accent-soft: #e8f1f8;
+  --warning: #8a4b08;
+}
+
+html {
+  line-height: 1.6;
+  hyphens: auto;
+}
+
+body {
+  color: var(--text);
+  background: white;
+  font-kerning: normal;
+  overflow-wrap: anywhere;
+}
+
+#title-block-header {
+  page: title-page;
+  min-height: 225mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  border-top: 8mm solid var(--accent);
+  box-sizing: border-box;
+  padding: 24mm 10mm;
+  break-after: page;
+}
+
+#title-block-header .title {
+  color: var(--accent);
+  font-size: 28pt;
+  line-height: 1.25;
+  margin: 0 0 12mm;
+  border: 0;
+}
+
+#title-block-header .subtitle {
+  color: var(--muted);
+  font-size: 15pt;
+  line-height: 1.5;
+  margin: 0 0 20mm;
+}
+
+#title-block-header .author,
+#title-block-header .date {
+  color: var(--muted);
+  font-size: 10.5pt;
+  margin: 2mm 0;
+}
+
+nav#TOC {
+  break-after: page;
+}
+
+nav#TOC > h2 {
+  font-size: 22pt;
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 3mm;
+}
+
+nav#TOC ul {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+nav#TOC ul ul {
+  padding-left: 7mm;
+}
+
+nav#TOC li {
+  margin: 1.2mm 0;
+}
+
+nav#TOC a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+nav#TOC a::after {
+  content: leader('.') target-counter(attr(href), page);
+  color: var(--muted);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--accent);
+  line-height: 1.3;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 22pt;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 2mm;
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 16pt;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1.5mm;
+  margin-top: 9mm;
+}
+
+h3 { font-size: 13pt; margin-top: 7mm; }
+h4 { font-size: 11pt; margin-top: 6mm; }
+
+p, li, td, th {
+  orphans: 3;
+  widows: 3;
+}
+
+a {
+  color: #0b5cab;
+  text-decoration: none;
+}
+
+blockquote {
+  margin: 5mm 0;
+  padding: 3mm 5mm;
+  border-left: 1.5mm solid var(--accent);
+  background: var(--accent-soft);
+  color: #243b53;
+  break-inside: avoid;
+}
+
+code {
+  font-family: var(--pdf-mono-font);
+  font-size: 0.9em;
+  background: #eef2f6;
+  padding: 0.2em 0.35em;
+  border-radius: 2px;
+}
+
+pre {
+  font-family: var(--pdf-mono-font);
+  font-size: 8.2pt;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #f3f4f6;
+  border: 1px solid #d9e2ec;
+  border-radius: 3px;
+  padding: 4mm;
+  break-inside: avoid;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.7pt;
+  margin: 5mm 0;
+}
+
+thead {
+  display: table-header-group;
+}
+
+tr {
+  break-inside: avoid;
+}
+
+th, td {
+  border: 0.3mm solid var(--line);
+  padding: 2mm 2.2mm;
+  vertical-align: top;
+}
+
+th {
+  background: #e8eef4;
+  color: #102a43;
+  font-weight: 700;
+}
+
+figure {
+  margin: 6mm auto;
+  break-inside: avoid;
+  text-align: center;
+}
+
+img {
+  max-width: 100%;
+  max-height: 205mm;
+  object-fit: contain;
+}
+
+figcaption {
+  color: var(--muted);
+  font-size: 8.5pt;
+  margin-top: 2mm;
+}
+
+hr {
+  border: 0;
+  border-top: 0.3mm solid var(--line);
+  margin: 8mm 0;
+}
+
+.page-break {
+  break-before: page;
+  page-break-before: always;
+  height: 0;
+}
+
+.generated-note {
+  display: none;
+}

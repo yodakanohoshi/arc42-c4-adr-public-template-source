@@ -1,0 +1,7 @@
+.git
+.venv
+__pycache__
+*.pyc
+site
+build
+_pdf_render*

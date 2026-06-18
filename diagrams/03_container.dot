@@ -1,0 +1,30 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="transparent", pad="0.25", nodesep="0.45", ranksep="0.7", fontname="Noto Sans CJK JP", label="Container View", labelloc=t, fontsize=18, compound=true];
+  node [shape=box, style="rounded,filled", fontname="Noto Sans CJK JP", fontsize=12, color="#35627d", fillcolor="#eef5fa", margin="0.17,0.10"];
+  edge [fontname="Noto Sans CJK JP", fontsize=9, color="#52606d", arrowsize=0.75];
+  user [shape=oval, label="利用者", fillcolor="#fff4d6"];
+  ext [label="外部システム"];
+  obs [label="可観測性基盤"];
+  subgraph cluster_target {
+    label="対象システム"; fontname="Noto Sans CJK JP"; fontsize=14; color="#7b9bb1"; style="rounded,dashed";
+    ui [label="クライアント\nアプリケーション"];
+    api [label="アプリケーションAPI"];
+    core [label="コア\nアプリケーション", fillcolor="#d9edf7"];
+    worker [label="バックグラウンド\nワーカー"];
+    data [shape=cylinder, label="データストア", fillcolor="#e8f5e9"];
+    adapter [label="外部連携\nアダプター"];
+    telemetry [label="テレメトリ\n送信"];
+    ui -> api [label="要求"];
+    api -> core [label="ユースケース"];
+    core -> data [label="読書き", dir=both];
+    core -> worker [label="非同期処理"];
+    worker -> data [label="状態更新"];
+    core -> adapter [label="外部連携"];
+    api -> telemetry [style=dashed];
+    core -> telemetry [style=dashed];
+    worker -> telemetry [style=dashed];
+  }
+  user -> ui [label="操作"];
+  adapter -> ext [label="API / Event / File", dir=both];
+  telemetry -> obs [label="Logs / Metrics / Traces"];
+}

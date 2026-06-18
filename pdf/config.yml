@@ -1,0 +1,19 @@
+title: arc42 / C4 / ADR 文書テンプレート
+subtitle: 汎用アーキテクチャ文書サンプル
+author: Template Maintainers
+output: build/architecture-document.pdf
+output_html: build/architecture-document.html
+combined_markdown: build/architecture-combined.md
+use_mkdocs_nav: true
+exclude: []
+toc_depth: 3
+paper_size: A4
+main_font: Noto Sans CJK JP
+mono_font: Noto Sans Mono CJK JP
+body_font_size: 10pt
+header_left: arc42 / C4 / ADR
+header_right: Architecture Documentation
+margin_top: 23mm
+margin_bottom: 20mm
+margin_left: 18mm
+margin_right: 18mm

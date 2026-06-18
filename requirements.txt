@@ -1,0 +1,3 @@
+mkdocs==1.6.1
+PyYAML==6.0.2
+weasyprint==68.1
