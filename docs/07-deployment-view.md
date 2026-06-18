@@ -1,4 +1,4 @@
-# 7. Deployment View
+# 7. デプロイメントビュー
 
 ## 7.1 論理配置
 
@@ -16,7 +16,7 @@
 | Security | 秘密情報、鍵、証明書、境界防御の責務 |
 | Observability | Logs、Metrics、Tracesの送信先 |
 
-## 7.3 Building Blockとの対応
+## 7.3 ブロックビューとの対応
 
 | Container ID | 配置先 | 冗長化 | Stateful | 復旧方針 |
 |---|---|---|---:|---|

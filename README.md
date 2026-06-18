@@ -91,6 +91,23 @@ docker compose run --rm --build diagrams
 
 生成されたPNGは `docs/assets/images/` に配置されます。DOTファイルが編集可能な原本です。
 
+## Mermaidで図を書く
+
+Markdown内に ` ```mermaid ` コードブロックを書くと、C4（`C4Context` など）を含むMermaid図をそのまま記載できます。
+
+```mermaid
+C4Context
+  title システムコンテキスト
+  Person(user, "利用者")
+  System(sys, "対象システム")
+  Rel(user, sys, "利用する")
+```
+
+- Webサイト（MkDocs）: ブラウザ側でMermaidを描画します。
+- PDF: WeasyPrintはJavaScriptを実行しないため、ビルド時に `mermaid-cli`（`mmdc`）で各ブロックをPNGへ変換し、`build/mermaid/` に出力して埋め込みます。
+
+Graphviz DOTによる図（`diagrams/*.dot`）も従来どおり併用できます。用途に応じて使い分けてください。
+
 ## PDFの見た目を変更する
 
 - 文書固有の値: `pdf/config.yml`

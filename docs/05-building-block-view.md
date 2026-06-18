@@ -1,8 +1,8 @@
-# 5. Building Block View
+# 5. ブロックビュー
 
 対象システム内部の静的な分割、責務、依存関係を示す。
 
-## 5.1 Level 1: Container View
+## 5.1 レベル1: コンテナビュー
 
 ![C4 Container](assets/images/03_container.png)
 
