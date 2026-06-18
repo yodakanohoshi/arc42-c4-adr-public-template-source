@@ -19,6 +19,7 @@ theme:
 
 nav:
   - ホーム: index.md
+  - Mermaidサンプル: mermaid-sample.md
   - arc42:
       - 1. はじめにと目標: 01-introduction-and-goals.md
       - 2. 制約: 02-constraints.md
