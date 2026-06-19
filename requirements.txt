@@ -1,4 +1,5 @@
 mkdocs==1.6.1
 pymdown-extensions==10.14.3
+plantuml-markdown==3.9.6
 PyYAML==6.0.2
 weasyprint==68.1

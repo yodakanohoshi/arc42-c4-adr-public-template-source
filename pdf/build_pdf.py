@@ -30,6 +30,7 @@ CONFIG = PROJECT / "pdf" / "config.yml"
 BASE_CSS = PROJECT / "pdf" / "print.css"
 HTML_TEMPLATE = PROJECT / "pdf" / "template.html"
 MERMAID_DIR = PROJECT / "build" / "mermaid"
+PLANTUML_DIR = PROJECT / "build" / "plantuml"
 PUPPETEER_CONFIG = PROJECT / "pdf" / "puppeteer.json"
 
 
@@ -353,6 +354,58 @@ def render_mermaid_blocks(combined: Path) -> int:
     return count
 
 
+def render_plantuml_blocks(combined: Path) -> int:
+    """Render fenced ```plantuml blocks to PNG and replace them with images.
+
+    WeasyPrint cannot run JavaScript, so PlantUML (including C4 diagrams written
+    against the bundled ``<C4/...>`` standard library) is rendered to images at
+    build time with the ``plantuml`` command. The source ```plantuml blocks stay
+    editable in docs/*.md; only the combined Markdown is rewritten.
+    """
+    text = combined.read_text(encoding="utf-8")
+    if "```plantuml" not in text and "~~~plantuml" not in text:
+        return 0
+
+    plantuml = os.environ.get("PLANTUML_CMD") or shutil.which("plantuml")
+    if not plantuml:
+        fail("plantuml code blocks found but the `plantuml` command was not found in PATH")
+
+    PLANTUML_DIR.mkdir(parents=True, exist_ok=True)
+    lines = text.splitlines()
+    out: list[str] = []
+    count = 0
+    i = 0
+    while i < len(lines):
+        stripped = lines[i].strip()
+        if stripped in ("```plantuml", "~~~plantuml"):
+            fence = stripped[:3]
+            i += 1
+            code: list[str] = []
+            while i < len(lines) and lines[i].strip() != fence:
+                code.append(lines[i])
+                i += 1
+            if i < len(lines):
+                i += 1  # skip the closing fence
+            count += 1
+            body = "\n".join(code).strip("\n")
+            # plantuml-markdown wraps fenced bodies in @startuml/@enduml on the
+            # site; do the same here so authors omit them in both places.
+            if not body.lstrip().startswith("@start"):
+                body = f"@startuml\n{body}\n@enduml"
+            source = PLANTUML_DIR / f"diagram-{count:03d}.puml"
+            source.write_text(body + "\n", encoding="utf-8")
+            image = PLANTUML_DIR / f"diagram-{count:03d}.png"
+            run([plantuml, "-tpng", "-charset", "UTF-8", "-o", str(PLANTUML_DIR), str(source)])
+            out.append(f"![]({image.relative_to(PROJECT).as_posix()})")
+            out.append("")
+        else:
+            out.append(lines[i])
+            i += 1
+
+    combined.write_text("\n".join(out) + "\n", encoding="utf-8")
+    return count
+
+
 def run(command: list[str]) -> None:
     print("+", " ".join(command))
     subprocess.run(command, cwd=PROJECT, check=True)
@@ -375,6 +428,9 @@ def main() -> None:
     diagrams = render_mermaid_blocks(combined)
     if diagrams:
         print(f"Rendered {diagrams} Mermaid diagram(s)")
+    puml = render_plantuml_blocks(combined)
+    if puml:
+        print(f"Rendered {puml} PlantUML diagram(s)")
     override_css = make_override_css(config)
 
     output_pdf = args.output or PROJECT / str(config.get("output", "build/architecture.pdf"))

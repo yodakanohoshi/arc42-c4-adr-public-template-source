@@ -7,7 +7,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     HOME=/tmp/home \
     XDG_CACHE_HOME=/tmp/cache \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
+    GRAPHVIZ_DOT=/usr/bin/dot \
+    PLANTUML_JAR=/opt/plantuml/plantuml.jar
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -26,6 +28,8 @@ RUN apt-get update \
        shared-mime-info \
        poppler-utils \
        ca-certificates \
+       curl \
+       default-jre-headless \
        nodejs \
        npm \
        chromium \
@@ -37,6 +41,17 @@ RUN apt-get update \
 # PDF. It drives the system Chromium installed above; no bundled download.
 RUN npm install -g @mermaid-js/mermaid-cli@10.9.1 \
     && npm cache clean --force
+
+# PlantUML renders ```plantuml blocks (including C4 via the bundled <C4/...>
+# standard library) for both the site and the PDF. The jar is self-contained and
+# drives the Graphviz `dot` installed above; the wrapper exposes it as `plantuml`.
+ARG PLANTUML_VERSION=1.2024.8
+RUN mkdir -p /opt/plantuml \
+    && curl -fsSL -o /opt/plantuml/plantuml.jar \
+       "https://github.com/plantuml/plantuml/releases/download/v${PLANTUML_VERSION}/plantuml-${PLANTUML_VERSION}.jar" \
+    && printf '#!/usr/bin/env sh\nexec java -Djava.awt.headless=true -jar "%s" "$@"\n' "${PLANTUML_JAR}" > /usr/local/bin/plantuml \
+    && chmod +x /usr/local/bin/plantuml \
+    && plantuml -version
 
 COPY requirements.txt /tmp/requirements.txt
 RUN python -m pip install --no-cache-dir -r /tmp/requirements.txt

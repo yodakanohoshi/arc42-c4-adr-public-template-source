@@ -55,7 +55,7 @@ docker compose run --rm --build verify
 ├── Makefile
 ├── mkdocs.yml
 ├── docs/                       # Markdownの正本
-├── diagrams/                   # Graphviz DOTの図面ソース
+├── diagrams/                   # Graphviz DOT / PlantUMLの図面ソース
 ├── pdf/
 │   ├── config.yml              # PDFタイトル、余白、出力名
 │   ├── print.css               # PDF印刷スタイル
@@ -107,6 +107,24 @@ C4Context
 - PDF: WeasyPrintはJavaScriptを実行しないため、ビルド時に `mermaid-cli`（`mmdc`）で各ブロックをPNGへ変換し、`build/mermaid/` に出力して埋め込みます。
 
 Graphviz DOTによる図（`diagrams/*.dot`）も従来どおり併用できます。用途に応じて使い分けてください。
+
+## PlantUMLで図を書く
+
+Markdown内に ` ```plantuml ` コードブロックを書くと、C4（`!include <C4/C4_Container>` など）を含むPlantUML図をそのまま記載できます。`@startuml` / `@enduml` は省略でき、ビルド時に自動補完されます。
+
+```plantuml
+!include <C4/C4_Context>
+title システムコンテキスト
+Person(user, "利用者")
+System(sys, "対象システム")
+Rel(user, sys, "利用する")
+```
+
+- Webサイト（MkDocs）: ビルド時に `plantuml-markdown` が `plantuml` を呼び出し、SVGへ変換して埋め込みます（ブラウザ側のJavaScriptや外部サーバーは不要）。
+- PDF: ビルド時に各ブロックを `plantuml` でPNGへ変換し、`build/plantuml/` に出力して埋め込みます。
+- 図面ソースとして `diagrams/*.puml` を置くと、`diagrams/*.dot` と同様に `docs/assets/images/` へPNGを生成します。
+
+C4の標準ライブラリ（`<C4/...>`）はPlantUMLに同梱されているため、オフラインで描画できます。レンダリングにはJava（JRE）と `plantuml` が必要で、いずれもDockerイメージに含まれています。
 
 ## PDFの見た目を変更する
 

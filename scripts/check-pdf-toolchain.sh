@@ -30,4 +30,10 @@ else
   echo "mermaid-cli (mmdc) not found: Mermaid diagrams will not render in the PDF" >&2
 fi
 
+if command -v plantuml >/dev/null 2>&1; then
+  echo "plantuml: $(plantuml -version 2>/dev/null | head -n 1)"
+else
+  echo "plantuml not found: PlantUML diagrams will not render in the PDF" >&2
+fi
+
 echo "PDF toolchain check passed (Pandoc + HTML/CSS + WeasyPrint; no LaTeX)."
