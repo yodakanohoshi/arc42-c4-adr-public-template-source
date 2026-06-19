@@ -69,21 +69,19 @@ markdown_extensions:
       toc_depth: 3
   # ```mermaid ブロック（C4を含む）を <pre class="mermaid"> として出力する。
   # サイトはブラウザでMermaidを描画し、PDFはビルド時に画像化する。
-  # ```plantuml ブロック（C4を含む）は plantuml-markdown が
-  # ビルド時にPlantUMLを呼び出してSVGへ変換し、サイトへ埋め込む。
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-        - name: plantuml
-          class: plantuml
-          format: !!python/name:plantuml_markdown.fence_code_format
+  # ```plantuml ブロック（C4を含む）を plantuml-markdown 自身の前処理で扱う。
   # server を指定せずローカルの `plantuml` コマンドで描画する（オフライン）。
   # 同梱の標準ライブラリで `!include <C4/C4_Container>` などのC4図も扱える。
+  # priority は superfences のフェンス処理（最大31.05）より高くして先に抽出する。
   - plantuml_markdown:
       format: svg
       encoding: utf-8
+      priority: 40
 
 extra_css:
   - assets/stylesheets/extra.css
